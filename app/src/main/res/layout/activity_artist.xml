@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/item_padding"
+        android:background="#2ebd59"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artists"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"
+            android:padding="@dimen/item_padding" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Listen to music by your favorite artists. Search by artist or album name using the box below."
+            android:textColor="@android:color/white"
+            android:paddingLeft="@dimen/item_padding"
+            android:paddingBottom="@dimen/item_padding"
+            android:paddingRight="@dimen/item_padding" />
+
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search"
+            android:background="@drawable/rounded_corners"
+            android:padding="@dimen/item_padding"
+            android:layout_margin="@dimen/item_padding"/>
+    </LinearLayout>
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+        android:name="nanodegree.spotifystreamer.ArtistActivityFragment"
+        tools:layout="@layout/fragment_artist" android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
+
