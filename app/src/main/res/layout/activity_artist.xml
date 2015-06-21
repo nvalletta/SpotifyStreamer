@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/item_padding"
-        android:background="#2ebd59"
+        android:background="@color/spotifyGreen"
         android:orientation="vertical">
 
         <TextView
@@ -40,8 +40,8 @@
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
-        android:name="nanodegree.spotifystreamer.ArtistActivityFragment"
-        tools:layout="@layout/fragment_artist" android:layout_width="match_parent"
+        android:name="nanodegree.spotifystreamer.fragments.ArtistActivityFragment"
+        tools:layout="@layout/fragment_list" android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
 </LinearLayout>
