@@ -24,6 +24,13 @@ public class ArtistListAdapter extends ArrayAdapter {
     private List<SpotifyArtist> spotifyArtists;
 
 
+    public ArtistListAdapter(Context context, List<SpotifyArtist> spotifyArtists) {
+        super(context, R.layout.list_item);
+        this.context = context;
+        this.spotifyArtists = spotifyArtists;
+    }
+
+
     private View instantiateConvertView(SpotifyArtist artist) {
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View convertView = layoutInflater.inflate(R.layout.list_item, null);
@@ -48,13 +55,6 @@ public class ArtistListAdapter extends ArrayAdapter {
     private void populateArtistName(View parent, SpotifyArtist artist) {
         TextView artistName = (TextView)parent.findViewById(R.id.artistName);
         artistName.setText(artist.getName());
-    }
-
-
-    public ArtistListAdapter(Context context, List<SpotifyArtist> spotifyArtists) {
-        super(context, R.layout.list_item);
-        this.context = context;
-        this.spotifyArtists = spotifyArtists;
     }
 
 

@@ -9,10 +9,16 @@ import nanodegree.spotifystreamer.R;
 public final class TrackActivity extends Activity {
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artists);
+        setContentView(R.layout.activity_tracks);
+
+        if (null != savedInstanceState) {
+
+        }
     }
 
 

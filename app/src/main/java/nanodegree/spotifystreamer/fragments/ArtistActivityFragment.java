@@ -10,16 +10,21 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import com.google.gson.internal.bind.MapTypeAdapterFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import nanodegree.spotifystreamer.activities.TrackActivity;
 import nanodegree.spotifystreamer.adapters.ArtistListAdapter;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
 import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 
 
-public class ArtistActivityFragment extends ListFragment {
+public final class ArtistActivityFragment extends ListFragment {
 
+
+    public static final String ARTIST_PARCEL_KEY = "SELECTED_ARTIST";
 
     private ArtistListAdapter mAdapter;
     private BroadcastReceiver artistSearchBroadcastReceiver = new BroadcastReceiver() {
@@ -69,6 +74,8 @@ public class ArtistActivityFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        // TODO: Launch next activity.
+        Intent trackActivityIntent = new Intent(getActivity().getApplicationContext(), TrackActivity.class);
+        trackActivityIntent.putExtra(ARTIST_PARCEL_KEY, mAdapter.getSpotifyArtistAtIndex(position));
+        getActivity().startActivity(trackActivityIntent);
     }
 }
