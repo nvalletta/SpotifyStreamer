@@ -6,14 +6,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
 
 import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 
 
-public class ArtistActivity extends Activity implements TextWatcher {
+public final class ArtistActivity extends Activity implements TextWatcher {
 
 
     private EditText searchBox;
@@ -39,7 +38,7 @@ public class ArtistActivity extends Activity implements TextWatcher {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_artist);
+        setContentView(R.layout.activity_artists);
 
         searchBox = (EditText)findViewById(R.id.searchEditText);
         searchBox.addTextChangedListener(this);

@@ -3,8 +3,11 @@ package nanodegree.spotifystreamer.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 import kaaes.spotify.webapi.android.models.Artist;
 import kaaes.spotify.webapi.android.models.ArtistSimple;
+import kaaes.spotify.webapi.android.models.Image;
 
 
 public class SpotifyArtist implements Parcelable {
@@ -17,6 +20,10 @@ public class SpotifyArtist implements Parcelable {
 
     public SpotifyArtist(Artist artist) {
         this.name = artist.name;
+        List<Image> images = artist.images;
+        if (!images.isEmpty()) {
+            this.thumbnailUrl = images.get(0).url;
+        }
     }
 
 
