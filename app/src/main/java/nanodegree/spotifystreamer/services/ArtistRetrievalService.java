@@ -21,11 +21,11 @@ import retrofit.client.Response;
 
 public class ArtistRetrievalService extends IntentService {
 
-
+    public final static String ARTISTS_EXTRA_KEY = "ARTISTS";
     public final static String ARTIST_BROADCAST_FILTER = "ARTIST_SEARCH_RESULTS";
+    public final static String ARTIST_QUERY_INTENT_KEY = "QUERY";
 
     private SpotifyApi spotifyApi = new SpotifyApi();
-    private String query = "";
 
 
     public ArtistRetrievalService() {
@@ -40,12 +40,11 @@ public class ArtistRetrievalService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        query = intent.getStringExtra("query");
-        sendArtistRequest();
+        sendArtistRequest(intent.getStringExtra(ARTIST_QUERY_INTENT_KEY));
     }
 
 
-    private void sendArtistRequest() {
+    private void sendArtistRequest(String query) {
         SpotifyService spotifyService = spotifyApi.getService();
         spotifyService.searchArtists(query, new Callback<ArtistsPager>() {
             @Override
@@ -65,18 +64,18 @@ public class ArtistRetrievalService extends IntentService {
         List<SpotifyArtist> spotifyArtists = new ArrayList<>();
         List<Artist> artistList = artistPager.artists.items;
         for (Artist artist : artistList) {
-            SpotifyArtist a = new SpotifyArtist(artist);
-            spotifyArtists.add(a);
+            SpotifyArtist spotifyArtist = new SpotifyArtist(artist);
+            spotifyArtists.add(spotifyArtist);
         }
 
-        Intent successFilter = new Intent(ARTIST_BROADCAST_FILTER);
-        successFilter.putParcelableArrayListExtra("artists", (ArrayList<? extends Parcelable>)spotifyArtists);
-        sendBroadcast(successFilter);
+        Intent responseIntent = new Intent(ARTIST_BROADCAST_FILTER);
+        responseIntent.putParcelableArrayListExtra(ARTISTS_EXTRA_KEY, (ArrayList<? extends Parcelable>)spotifyArtists);
+        sendBroadcast(responseIntent);
     }
 
 
     private void notifyOfFailure(RetrofitError error) {
-
+        //TODO: handle failure
     }
 
 

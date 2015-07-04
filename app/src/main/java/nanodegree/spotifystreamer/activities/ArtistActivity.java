@@ -14,9 +14,9 @@ import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 
 public final class ArtistActivity extends Activity implements TextWatcher {
 
-
     private EditText searchBox;
     private Handler searchHandler = new Handler();
+
 
     private final Runnable searchRunnable = new Runnable() {
         @Override
@@ -29,7 +29,7 @@ public final class ArtistActivity extends Activity implements TextWatcher {
                 return;
             }
             Intent searchIntent = new Intent(ArtistActivity.this, ArtistRetrievalService.class);
-            searchIntent.putExtra("query", query);
+            searchIntent.putExtra(ArtistRetrievalService.ARTIST_QUERY_INTENT_KEY, query);
             ArtistActivity.this.startService(searchIntent);
         }
     };

@@ -20,6 +20,7 @@ public class SpotifyArtist implements Parcelable {
 
     public SpotifyArtist(Artist artist) {
         this.name = artist.name;
+        this.id = artist.id;
         List<Image> images = artist.images;
         if (!images.isEmpty()) {
             this.thumbnailUrl = images.get(0).url;

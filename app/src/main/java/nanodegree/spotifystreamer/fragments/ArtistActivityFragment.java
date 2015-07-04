@@ -30,7 +30,7 @@ public final class ArtistActivityFragment extends ListFragment {
     private BroadcastReceiver artistSearchBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            List<SpotifyArtist> spotifyArtists = intent.getParcelableArrayListExtra("artists");
+            List<SpotifyArtist> spotifyArtists = intent.getParcelableArrayListExtra(ArtistRetrievalService.ARTISTS_EXTRA_KEY);
             mAdapter = new ArtistListAdapter(getActivity(), spotifyArtists);
             setListAdapter(mAdapter);
         }
