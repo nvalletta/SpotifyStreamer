@@ -71,7 +71,7 @@ public final class ArtistActivity extends Activity implements TextWatcher {
             return;
         }
         searchHandler.removeCallbacks(searchRunnable);
-        searchHandler.postDelayed(searchRunnable, 1000);
+        searchHandler.postDelayed(searchRunnable, 500);
     }
 
 
