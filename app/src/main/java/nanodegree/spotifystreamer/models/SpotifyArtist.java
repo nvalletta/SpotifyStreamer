@@ -6,15 +6,14 @@ import android.os.Parcelable;
 import java.util.List;
 
 import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.ArtistSimple;
 import kaaes.spotify.webapi.android.models.Image;
 
 
 public class SpotifyArtist implements Parcelable {
 
 
-    private String name;
-    private String id;
+    private final String name;
+    private final String id;
     private String thumbnailUrl;
 
 

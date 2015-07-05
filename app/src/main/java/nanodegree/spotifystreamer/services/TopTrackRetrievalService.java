@@ -25,7 +25,7 @@ public class TopTrackRetrievalService extends IntentService {
     public final static String TOP_TRACK_BROADCAST_FILTER = "TRACK_BROADCAST_FILTER";
     public final static String ARTIST_ID_INTENT_KEY = "ARTIST_ID";
 
-    private SpotifyApi spotifyApi = new SpotifyApi();
+    private final SpotifyApi spotifyApi = new SpotifyApi();
 
 
     public TopTrackRetrievalService() {

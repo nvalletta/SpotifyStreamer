@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,11 +19,13 @@ import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 public final class TrackActivityFragment extends ListFragment {
 
 
+    private static final String SPOTIFY_TRACKS_PARCEL_KEY = "SPOTIFY_TRACKS";
+    private List<SpotifyTrack> spotifyTracks = new ArrayList<>();
     private TrackListAdapter mAdapter;
-    private BroadcastReceiver topTracksBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver topTracksBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            List<SpotifyTrack> spotifyTracks = intent.getParcelableArrayListExtra(TopTrackRetrievalService.TRACKS_EXTRA_KEY);
+            spotifyTracks = intent.getParcelableArrayListExtra(TopTrackRetrievalService.TRACKS_EXTRA_KEY);
             mAdapter = new TrackListAdapter(getActivity(), spotifyTracks);
             setListAdapter(mAdapter);
         }
@@ -40,10 +43,21 @@ public final class TrackActivityFragment extends ListFragment {
 
 
     @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY, (ArrayList<? extends Parcelable>)spotifyTracks);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        List<SpotifyTrack> spotifyTracks = new ArrayList<>();
+        if (null != savedInstanceState && null != savedInstanceState.getParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY)) {
+            spotifyTracks = savedInstanceState.getParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY);
+        } else {
+            spotifyTracks = new ArrayList<>();
+        }
         mAdapter = new TrackListAdapter(getActivity(), spotifyTracks);
     }
 

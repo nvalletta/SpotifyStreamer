@@ -6,11 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.ListView;
-
-import com.google.gson.internal.bind.MapTypeAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +22,15 @@ import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 public final class ArtistActivityFragment extends ListFragment {
 
 
+    public static final String SPOTIFY_ARTISTS_PARCEL_KEY = "ARTIST_LIST";
     public static final String ARTIST_PARCEL_KEY = "SELECTED_ARTIST";
 
+    private List<SpotifyArtist> spotifyArtists = new ArrayList<>();
     private ArtistListAdapter mAdapter;
-    private BroadcastReceiver artistSearchBroadcastReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver artistSearchBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            List<SpotifyArtist> spotifyArtists = intent.getParcelableArrayListExtra(ArtistRetrievalService.ARTISTS_EXTRA_KEY);
+            spotifyArtists = intent.getParcelableArrayListExtra(ArtistRetrievalService.ARTISTS_EXTRA_KEY);
             mAdapter = new ArtistListAdapter(getActivity(), spotifyArtists);
             setListAdapter(mAdapter);
         }
@@ -51,8 +51,17 @@ public final class ArtistActivityFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        List<SpotifyArtist> spotifyArtists = new ArrayList<>();
+        if (null != savedInstanceState && null != savedInstanceState.getParcelableArrayList(SPOTIFY_ARTISTS_PARCEL_KEY)) {
+            spotifyArtists = savedInstanceState.getParcelableArrayList(SPOTIFY_ARTISTS_PARCEL_KEY);
+        }
         mAdapter = new ArtistListAdapter(getActivity(), spotifyArtists);
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelableArrayList(SPOTIFY_ARTISTS_PARCEL_KEY, (ArrayList<? extends Parcelable>)spotifyArtists);
+        super.onSaveInstanceState(savedInstanceState);
     }
 
 

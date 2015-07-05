@@ -13,6 +13,7 @@ import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 
 public final class TrackActivity extends Activity {
 
+
     private SpotifyArtist spotifyArtist = null;
 
 

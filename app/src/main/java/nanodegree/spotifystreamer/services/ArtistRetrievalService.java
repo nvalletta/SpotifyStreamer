@@ -2,7 +2,6 @@ package nanodegree.spotifystreamer.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.List;
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
 import kaaes.spotify.webapi.android.models.Artist;
-import kaaes.spotify.webapi.android.models.Artists;
 import kaaes.spotify.webapi.android.models.ArtistsPager;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
 import retrofit.Callback;
@@ -25,7 +23,7 @@ public class ArtistRetrievalService extends IntentService {
     public final static String ARTIST_BROADCAST_FILTER = "ARTIST_SEARCH_RESULTS";
     public final static String ARTIST_QUERY_INTENT_KEY = "QUERY";
 
-    private SpotifyApi spotifyApi = new SpotifyApi();
+    private final SpotifyApi spotifyApi = new SpotifyApi();
 
 
     public ArtistRetrievalService() {

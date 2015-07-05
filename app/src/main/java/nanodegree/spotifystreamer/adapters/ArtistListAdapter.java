@@ -19,8 +19,8 @@ import nanodegree.spotifystreamer.models.SpotifyArtist;
 
 public class ArtistListAdapter extends ArrayAdapter {
 
-    private Context context;
-    private List<SpotifyArtist> spotifyArtists;
+    private final Context context;
+    private final List<SpotifyArtist> spotifyArtists;
 
 
     public ArtistListAdapter(Context context, List<SpotifyArtist> spotifyArtists) {

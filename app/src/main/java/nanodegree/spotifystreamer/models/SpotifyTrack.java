@@ -11,10 +11,10 @@ import kaaes.spotify.webapi.android.models.Track;
 
 public class SpotifyTrack implements Parcelable {
 
-    private String trackName;
-    private String albumName;
+    private final String trackName;
+    private final String albumName;
     private String albumThumbnailUrl;
-    private String previewUrl;
+    private final String previewUrl;
 
 
     public SpotifyTrack(Track track) {

@@ -20,8 +20,8 @@ import nanodegree.spotifystreamer.models.SpotifyTrack;
 public class TrackListAdapter extends ArrayAdapter {
 
 
-    private Context context;
-    private List<SpotifyTrack> tracks;
+    private final Context context;
+    private final List<SpotifyTrack> tracks;
 
 
     public TrackListAdapter(Context context, List<SpotifyTrack> tracks) {
