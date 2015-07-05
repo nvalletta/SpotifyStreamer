@@ -4,8 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="item_padding">10dp</dimen>
 
-    <dimen name="list_item_main_text">18sp</dimen>
-    <dimen name="list_item_text">16sp</dimen>
+    <dimen name="list_item_main_text">16sp</dimen>
+    <dimen name="list_item_text">14sp</dimen>
     <dimen name="list_item_padding">15dp</dimen>
     <dimen name="list_item_text_padding">25dp</dimen>
 

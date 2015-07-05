@@ -18,12 +18,12 @@
         android:paddingStart="@dimen/list_item_text_padding"
         android:paddingEnd="@dimen/list_item_text_padding">
         <TextView
-            android:id="@+id/artistName"
+            android:id="@+id/mainText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/list_item_main_text" />
         <TextView
-            android:id="@+id/albumName"
+            android:id="@+id/secondaryText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/list_item_text"

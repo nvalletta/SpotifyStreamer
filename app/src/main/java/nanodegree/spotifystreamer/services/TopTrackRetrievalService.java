@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import kaaes.spotify.webapi.android.SpotifyApi;
 import kaaes.spotify.webapi.android.SpotifyService;
@@ -44,7 +46,9 @@ public class TopTrackRetrievalService extends IntentService {
 
     private void sendTopTrackRequestForArtist(String artistId) {
         SpotifyService spotifyService = spotifyApi.getService();
-        spotifyService.getArtistTopTrack(artistId, new Callback<Tracks>() {
+        Map<String, Object> countryCode = new HashMap<>();
+        countryCode.put("country","US");
+        spotifyService.getArtistTopTrack(artistId, countryCode, new Callback<Tracks>() {
             @Override
             public void success(Tracks tracks, Response response) {
                 notifyOfSuccess(tracks);

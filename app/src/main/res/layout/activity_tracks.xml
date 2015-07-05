@@ -9,7 +9,7 @@
         android:background="@color/spotifyGreen"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/artistName"
+            android:id="@+id/mainText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
@@ -27,6 +27,10 @@
             android:paddingRight="@dimen/item_padding" />
     </LinearLayout>
 
-
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" android:id="@+id/fragment"
+        android:name="nanodegree.spotifystreamer.fragments.TrackActivityFragment"
+        tools:layout="@layout/fragment_list" android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

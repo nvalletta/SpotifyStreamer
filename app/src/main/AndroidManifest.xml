@@ -23,6 +23,9 @@
         <service
             android:name=".services.ArtistRetrievalService"
             android:exported="false"/>
+        <service
+            android:name=".services.TopTrackRetrievalService"
+            android:exported="false"/>
     </application>
 
 </manifest>

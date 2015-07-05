@@ -11,27 +11,57 @@ import kaaes.spotify.webapi.android.models.Track;
 
 public class SpotifyTrack implements Parcelable {
 
-    private String name;
-    private String thumbnailUrl;
+    private String trackName;
+    private String albumName;
+    private String albumThumbnailUrl;
+    private String previewUrl;
+
 
     public SpotifyTrack(Track track) {
-        this.name = track.name;
+        this.trackName = track.name;
+        this.albumName = track.album.name;
+        this.previewUrl = track.preview_url;
         List<Image> images = track.album.images;
         if (!images.isEmpty()) {
-            this.thumbnailUrl = track.album.images.get(0).url;
+            this.albumThumbnailUrl = track.album.images.get(0).url;
         }
     }
+
+
+    public String getTrackName() {
+        return trackName;
+    }
+
+
+    public String getAlbumName() {
+        return albumName;
+    }
+
+
+    public String getAlbumThumbnailUrl() {
+        return albumThumbnailUrl;
+    }
+
+
+    public String getPreviewUrl() {
+        return previewUrl;
+    }
+
 
     @Override
     public int describeContents() {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.thumbnailUrl);
+        dest.writeString(this.trackName);
+        dest.writeString(this.albumName);
+        dest.writeString(this.previewUrl);
+        dest.writeString(this.albumThumbnailUrl);
     }
+
 
     public static final Parcelable.Creator<SpotifyTrack> CREATOR = new Parcelable.Creator<SpotifyTrack>() {
         @Override
@@ -45,9 +75,13 @@ public class SpotifyTrack implements Parcelable {
         }
     };
 
+
     private SpotifyTrack(Parcel parcel) {
-        this.name = parcel.readString();
-        this.thumbnailUrl = parcel.readString();
+        this.trackName = parcel.readString();
+        this.albumName = parcel.readString();
+        this.previewUrl = parcel.readString();
+        this.albumThumbnailUrl = parcel.readString();
     }
+
 
 }

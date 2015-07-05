@@ -2,7 +2,6 @@ package nanodegree.spotifystreamer.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,12 +32,12 @@ public class ArtistListAdapter extends ArrayAdapter {
 
     private View instantiateConvertView(SpotifyArtist artist) {
         LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View convertView = layoutInflater.inflate(R.layout.list_item, null);
+        View parentView = layoutInflater.inflate(R.layout.list_item, null);
 
-        populateImageView(convertView, artist);
-        populateArtistName(convertView, artist);
+        populateImageView(parentView, artist);
+        populateArtistName(parentView, artist);
 
-        return convertView;
+        return parentView;
     }
 
 
@@ -53,7 +52,7 @@ public class ArtistListAdapter extends ArrayAdapter {
 
 
     private void populateArtistName(View parent, SpotifyArtist artist) {
-        TextView artistName = (TextView)parent.findViewById(R.id.artistName);
+        TextView artistName = (TextView)parent.findViewById(R.id.mainText);
         artistName.setText(artist.getName());
     }
 
@@ -72,10 +71,7 @@ public class ArtistListAdapter extends ArrayAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         SpotifyArtist spotifyArtist = spotifyArtists.get(position);
-        if (null == convertView) {
-            convertView = instantiateConvertView(spotifyArtist);
-        }
-        return convertView;
+        return instantiateConvertView(spotifyArtist);
     }
 
 
