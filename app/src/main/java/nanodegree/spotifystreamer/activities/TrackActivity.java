@@ -14,6 +14,7 @@ import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 public final class TrackActivity extends Activity {
 
 
+    private static final String SPOTIFY_ARTIST_PARCEL_KEY = "SELECTED_ARTIST";
     private SpotifyArtist spotifyArtist = null;
 
 
@@ -22,18 +23,33 @@ public final class TrackActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracks);
 
+        if (null != savedInstanceState && null != savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY)) {
+            spotifyArtist = savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY);
+            populateViewWithArtistTrackData();
+            return;
+        }
+
         if (null != getIntent() && getIntent().hasExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY) && null == spotifyArtist) {
             spotifyArtist = getIntent().getParcelableExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY);
-            populateViewsWithArtistTrackData();
+            if (null != spotifyArtist) {
+                populateViewWithArtistTrackData();
+                retrieveTopTracks();
+            }
         }
     }
 
 
-    private void populateViewsWithArtistTrackData() {
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        savedInstanceState.putParcelable(SPOTIFY_ARTIST_PARCEL_KEY, spotifyArtist);
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    private void populateViewWithArtistTrackData() {
         if (null != spotifyArtist) {
             TextView artistName = (TextView)findViewById(R.id.mainText);
             artistName.setText(spotifyArtist.getName());
-            retrieveTopTracks();
         }
     }
 
