@@ -1,7 +1,6 @@
 package nanodegree.spotifystreamer.adapters;
 
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,44 +30,6 @@ public class TrackListAdapter extends ArrayAdapter {
     }
 
 
-    private SpotifyTrack getTrackAtIndex(int index) {
-        return this.tracks.get(index);
-    }
-
-
-    private View instantiateConvertView(SpotifyTrack track) {
-        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View parentView = layoutInflater.inflate(R.layout.list_item, null);
-
-        populateImageView(parentView, track);
-        populateTextViews(parentView, track);
-
-        return parentView;
-    }
-
-
-    private void populateImageView(View parent, SpotifyTrack track) {
-        ImageView thumbnail = (ImageView)parent.findViewById(R.id.thumbnail);
-        if (null != track.getAlbumThumbnailUrl()) {
-            Picasso.with(context).load(track.getAlbumThumbnailUrl()).into(thumbnail);
-        } else {
-            thumbnail.setImageDrawable(context.getDrawable(R.drawable.no_image_available));
-        }
-    }
-
-
-    private void populateTextViews(View parent, SpotifyTrack track) {
-        TextView mainText = (TextView)parent.findViewById(R.id.mainText);
-        TextView secondaryText = (TextView)parent.findViewById(R.id.secondaryText);
-
-        mainText.setText(track.getTrackName());
-        if (null != track.getAlbumName() && !track.getAlbumName().isEmpty()) {
-            secondaryText.setText(track.getAlbumName());
-            secondaryText.setVisibility(View.VISIBLE);
-        }
-    }
-
-
     @Override
     public int getCount() {
         return tracks.size();
@@ -77,7 +38,51 @@ public class TrackListAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         SpotifyTrack track = tracks.get(position);
-        return instantiateConvertView(track);
+        ViewHolder holder;
+
+        if (null == convertView) {
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            holder.mainText = (TextView)convertView.findViewById(R.id.mainText);
+            holder.secondaryText = (TextView)convertView.findViewById(R.id.secondaryText);
+            holder.thumbnail = (ImageView)convertView.findViewById(R.id.thumbnail);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder)convertView.getTag();
+        }
+
+        populateViewHolderData(track, holder);
+
+        return convertView;
     }
+
+
+    private void populateViewHolderData(SpotifyTrack track, ViewHolder holder) {
+        holder.mainText.setText(track.getTrackName());
+        if (null != track.getAlbumName() && !track.getAlbumName().isEmpty()) {
+            holder.secondaryText.setText(track.getAlbumName());
+            holder.secondaryText.setVisibility(View.VISIBLE);
+        }
+        if (null != track.getAlbumThumbnailUrl()) {
+            Picasso.with(context).load(track.getAlbumThumbnailUrl()).into(holder.thumbnail);
+        } else {
+            holder.thumbnail.setImageDrawable(context.getDrawable(R.drawable.no_image_available));
+        }
+    }
+
+
+    private SpotifyTrack getTrackAtIndex(int index) {
+        return this.tracks.get(index);
+    }
+
+
+    private class ViewHolder {
+        TextView mainText;
+        TextView secondaryText;
+        ImageView thumbnail;
+    }
+
+
 }

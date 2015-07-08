@@ -1,6 +1,5 @@
 package nanodegree.spotifystreamer.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,33 +29,6 @@ public class ArtistListAdapter extends ArrayAdapter {
     }
 
 
-    private View instantiateConvertView(SpotifyArtist artist) {
-        LayoutInflater layoutInflater = (LayoutInflater)context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        View parentView = layoutInflater.inflate(R.layout.list_item, null);
-
-        populateImageView(parentView, artist);
-        populateArtistName(parentView, artist);
-
-        return parentView;
-    }
-
-
-    private void populateImageView(View parent, SpotifyArtist artist) {
-        ImageView artistThumbnailImageView = (ImageView)parent.findViewById(R.id.thumbnail);
-        if (null != artist.getThumbnailUrl()) {
-            Picasso.with(context).load(artist.getThumbnailUrl()).into(artistThumbnailImageView);
-        } else {
-            artistThumbnailImageView.setImageDrawable(context.getDrawable(R.drawable.no_image_available));
-        }
-    }
-
-
-    private void populateArtistName(View parent, SpotifyArtist artist) {
-        TextView artistName = (TextView)parent.findViewById(R.id.mainText);
-        artistName.setText(artist.getName());
-    }
-
-
     public SpotifyArtist getSpotifyArtistAtIndex(int index) {
         return this.spotifyArtists.get(index);
     }
@@ -70,9 +42,39 @@ public class ArtistListAdapter extends ArrayAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         SpotifyArtist spotifyArtist = spotifyArtists.get(position);
-        return instantiateConvertView(spotifyArtist);
+        ViewHolder holder;
+
+        if (null == convertView) {
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            holder.artistName = (TextView)convertView.findViewById(R.id.mainText);
+            holder.thumbnail = (ImageView)convertView.findViewById(R.id.thumbnail);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        populateViewHolderData(spotifyArtist, holder);
+
+        return convertView;
     }
 
+
+    private void populateViewHolderData(SpotifyArtist spotifyArtist, ViewHolder holder) {
+        holder.artistName.setText(spotifyArtist.getName());
+        if (null != spotifyArtist.getThumbnailUrl()) {
+            Picasso.with(context).load(spotifyArtist.getThumbnailUrl()).into(holder.thumbnail);
+        } else {
+            holder.thumbnail.setImageDrawable(context.getDrawable(R.drawable.no_image_available));
+        }
+    }
+
+
+    private class ViewHolder {
+        TextView artistName;
+        ImageView thumbnail;
+    }
 
 }
