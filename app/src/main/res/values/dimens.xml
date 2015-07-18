@@ -10,4 +10,8 @@
     <dimen name="header_text_size">22sp</dimen>
     <dimen name="list_item_height">110dp</dimen>
     <dimen name="thumbnail_dimension">80dp</dimen>
+
+    <dimen name="multi_pane_left_width">275dp</dimen>
+    <dimen name="pane_elevation">16sp</dimen>
+
 </resources>

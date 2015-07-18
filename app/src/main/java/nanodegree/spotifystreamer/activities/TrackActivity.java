@@ -1,17 +1,15 @@
 package nanodegree.spotifystreamer.activities;
 
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.fragments.ArtistActivityFragment;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
-import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 
-public final class TrackActivity extends Activity {
+
+public final class TrackActivity extends SpotifyActivity {
 
 
     private static final String SPOTIFY_ARTIST_PARCEL_KEY = "SELECTED_ARTIST";
@@ -33,7 +31,7 @@ public final class TrackActivity extends Activity {
             spotifyArtist = getIntent().getParcelableExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY);
             if (null != spotifyArtist) {
                 populateViewWithArtistTrackData();
-                retrieveTopTracks();
+                retrieveTopTracks(spotifyArtist.getId());
             }
         }
     }
@@ -51,13 +49,6 @@ public final class TrackActivity extends Activity {
             TextView artistName = (TextView)findViewById(R.id.mainText);
             artistName.setText(spotifyArtist.getName());
         }
-    }
-
-
-    private void retrieveTopTracks() {
-        Intent topTracksIntent = new Intent(this, TopTrackRetrievalService.class);
-        topTracksIntent.putExtra(TopTrackRetrievalService.ARTIST_ID_INTENT_KEY, spotifyArtist.getId());
-        startService(topTracksIntent);
     }
 
 

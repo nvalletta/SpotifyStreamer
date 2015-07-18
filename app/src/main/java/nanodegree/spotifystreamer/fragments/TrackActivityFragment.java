@@ -35,6 +35,13 @@ public final class TrackActivityFragment extends ListFragment {
     public TrackActivityFragment() { }
 
 
+    public void populateListWithTracks(List<SpotifyTrack> tracks) {
+        this.spotifyTracks = tracks;
+        mAdapter = new TrackListAdapter(getActivity(), tracks);
+        setListAdapter(mAdapter);
+    }
+
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,7 +1,5 @@
 package nanodegree.spotifystreamer.activities;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -9,10 +7,9 @@ import android.text.TextWatcher;
 import android.widget.EditText;
 
 import nanodegree.spotifystreamer.R;
-import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 
 
-public final class ArtistActivity extends Activity implements TextWatcher {
+public final class ArtistActivity extends SpotifyActivity implements TextWatcher {
 
 
     private static final String PREVIOUS_SEARCH_KEY = "PREVIOUS_SEARCH";
@@ -31,9 +28,8 @@ public final class ArtistActivity extends Activity implements TextWatcher {
             if (query.isEmpty()) {
                 return;
             }
-            Intent searchIntent = new Intent(ArtistActivity.this, ArtistRetrievalService.class);
-            searchIntent.putExtra(ArtistRetrievalService.ARTIST_QUERY_INTENT_KEY, query);
-            ArtistActivity.this.startService(searchIntent);
+
+            performArtistSearch(query);
             previousSearch = query;
         }
     };

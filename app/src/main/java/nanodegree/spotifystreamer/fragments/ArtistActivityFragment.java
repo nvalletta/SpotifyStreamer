@@ -1,5 +1,6 @@
 package nanodegree.spotifystreamer.fragments;
 
+import android.app.Fragment;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,10 +14,12 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.activities.TrackActivity;
 import nanodegree.spotifystreamer.adapters.ArtistListAdapter;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
 import nanodegree.spotifystreamer.services.ArtistRetrievalService;
+import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 
 
 public final class ArtistActivityFragment extends ListFragment {
@@ -35,6 +38,20 @@ public final class ArtistActivityFragment extends ListFragment {
             setListAdapter(mAdapter);
         }
     };
+
+
+    private void launchTrackActivity(int position) {
+        Intent trackActivityIntent = new Intent(getActivity().getApplicationContext(), TrackActivity.class);
+        trackActivityIntent.putExtra(ARTIST_PARCEL_KEY, mAdapter.getSpotifyArtistAtIndex(position));
+        getActivity().startActivity(trackActivityIntent);
+    }
+
+
+    private void retrieveTopTracksForArtist(int position) {
+        Intent topTracksIntent = new Intent(getActivity(), TopTrackRetrievalService.class);
+        topTracksIntent.putExtra(TopTrackRetrievalService.ARTIST_ID_INTENT_KEY, mAdapter.getSpotifyArtistAtIndex(position).getId());
+        getActivity().startService(topTracksIntent);
+    }
 
 
     public ArtistActivityFragment() { }
@@ -83,8 +100,12 @@ public final class ArtistActivityFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent trackActivityIntent = new Intent(getActivity().getApplicationContext(), TrackActivity.class);
-        trackActivityIntent.putExtra(ARTIST_PARCEL_KEY, mAdapter.getSpotifyArtistAtIndex(position));
-        getActivity().startActivity(trackActivityIntent);
+        String tagName = getActivity().getString(R.string.track_fragment_tag);
+        Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(tagName);
+        if (null != fragment) {
+            retrieveTopTracksForArtist(position);
+        } else {
+            launchTrackActivity(position);
+        }
     }
 }
