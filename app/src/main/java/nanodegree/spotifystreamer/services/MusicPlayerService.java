@@ -15,6 +15,11 @@ import java.io.IOException;
 public class MusicPlayerService extends IntentService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
 
+    public static final String TRACK_DURATION_INTENT_FILTER = "TRACK_DURATION_INTENT_FILTER";
+    public static final String PLAY_PAUSE_READY_INTENT_FILTER = "PLAY_PAUSE_READY_INTENT_FILTER";
+
+    public static final String TRACK_DURATION_INTENT_KEY = "TRACK_DURATION_INTENT_KEY";
+
     public static final String TRACK_URI_INTENT_KEY = "TRACK_URI";
 
     public static final String ACTION_PLAY = "PLAY_TRACK";
@@ -29,6 +34,18 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
 
     public MusicPlayerService(String name) {
         super(name);
+    }
+
+
+    private void emitDurationIntent() {
+        Intent durationIntent = new Intent(TRACK_DURATION_INTENT_FILTER);
+        durationIntent.putExtra()
+        sendBroadcast(durationIntent);
+    }
+
+
+    private void emitPlayPauseReadyIntent() {
+        //TODO: Tell the music player dialog that it can switch icons now.
     }
 
 
@@ -102,6 +119,8 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
 
     @Override
     public void onPrepared(MediaPlayer mp) {
+        emitDurationIntent();
+        emitPlayPauseReadyIntent();
         mp.start();
     }
 
