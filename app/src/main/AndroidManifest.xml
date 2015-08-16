@@ -27,6 +27,9 @@
         <service
             android:name=".services.TopTrackRetrievalService"
             android:exported="false"/>
+        <service
+            android:name=".services.MusicPlayerService"
+            android:exported="false"/>
     </application>
 
 </manifest>

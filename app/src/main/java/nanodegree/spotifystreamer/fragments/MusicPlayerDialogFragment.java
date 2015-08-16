@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import nanodegree.spotifystreamer.R;
+import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
 import nanodegree.spotifystreamer.models.SpotifyTrack;
 
@@ -57,7 +58,7 @@ public final class MusicPlayerDialogFragment extends DialogFragment {
         this.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: play music.
+                ((SpotifyActivity)getActivity()).playTrack(track);
             }
         });
 
