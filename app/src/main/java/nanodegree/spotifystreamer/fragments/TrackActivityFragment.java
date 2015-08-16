@@ -1,5 +1,7 @@
 package nanodegree.spotifystreamer.fragments;
 
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,10 +9,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.View;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.adapters.TrackListAdapter;
 import nanodegree.spotifystreamer.models.SpotifyTrack;
 import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
@@ -33,13 +38,6 @@ public final class TrackActivityFragment extends ListFragment {
 
 
     public TrackActivityFragment() { }
-
-
-    public void populateListWithTracks(List<SpotifyTrack> tracks) {
-        this.spotifyTracks = tracks;
-        mAdapter = new TrackListAdapter(getActivity(), tracks);
-        setListAdapter(mAdapter);
-    }
 
 
     @Override
@@ -81,6 +79,23 @@ public final class TrackActivityFragment extends ListFragment {
     public void onPause() {
         super.onPause();
         getActivity().unregisterReceiver(topTracksBroadcastReceiver);
+    }
+
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        SpotifyTrack chosenTrack = spotifyTracks.get(position);
+        SpotifyActivity.chosenTrack = chosenTrack;
+
+        FragmentManager fragmentManager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+        MusicPlayerDialogFragment musicPlayerDialogFragment = new MusicPlayerDialogFragment();
+
+        Bundle argument = new Bundle();
+        argument.putParcelable(MusicPlayerDialogFragment.CHOSEN_ARTIST_KEY, SpotifyActivity.chosenArtist);
+        argument.putParcelable(MusicPlayerDialogFragment.CHOSEN_TRACK_KEY, SpotifyActivity.chosenTrack);
+        musicPlayerDialogFragment.setArguments(argument);
+        musicPlayerDialogFragment.show(fragmentManager, "player");
     }
 
 

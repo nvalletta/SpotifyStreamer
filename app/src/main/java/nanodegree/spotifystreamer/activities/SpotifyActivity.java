@@ -1,13 +1,18 @@
 package nanodegree.spotifystreamer.activities;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.FragmentActivity;
 
+import nanodegree.spotifystreamer.models.SpotifyArtist;
+import nanodegree.spotifystreamer.models.SpotifyTrack;
 import nanodegree.spotifystreamer.services.ArtistRetrievalService;
 import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 
 
-public abstract class SpotifyActivity extends Activity {
+public abstract class SpotifyActivity extends FragmentActivity {
+
+    public static SpotifyArtist chosenArtist;
+    public static SpotifyTrack chosenTrack;
 
     public void performArtistSearch(String query) {
         Intent searchIntent = new Intent(SpotifyActivity.this, ArtistRetrievalService.class);

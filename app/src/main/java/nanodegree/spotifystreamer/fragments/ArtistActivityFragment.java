@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nanodegree.spotifystreamer.R;
+import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.activities.TrackActivity;
 import nanodegree.spotifystreamer.adapters.ArtistListAdapter;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
@@ -40,16 +41,16 @@ public final class ArtistActivityFragment extends ListFragment {
     };
 
 
-    private void launchTrackActivity(int position) {
+    private void launchTrackActivity(SpotifyArtist chosenArtist) {
         Intent trackActivityIntent = new Intent(getActivity().getApplicationContext(), TrackActivity.class);
-        trackActivityIntent.putExtra(ARTIST_PARCEL_KEY, mAdapter.getSpotifyArtistAtIndex(position));
+        trackActivityIntent.putExtra(ARTIST_PARCEL_KEY, chosenArtist);
         getActivity().startActivity(trackActivityIntent);
     }
 
 
-    private void retrieveTopTracksForArtist(int position) {
+    private void retrieveTopTracksForArtist(SpotifyArtist chosenArtist) {
         Intent topTracksIntent = new Intent(getActivity(), TopTrackRetrievalService.class);
-        topTracksIntent.putExtra(TopTrackRetrievalService.ARTIST_ID_INTENT_KEY, mAdapter.getSpotifyArtistAtIndex(position).getId());
+        topTracksIntent.putExtra(TopTrackRetrievalService.ARTIST_ID_INTENT_KEY, chosenArtist.getId());
         getActivity().startService(topTracksIntent);
     }
 
@@ -102,10 +103,13 @@ public final class ArtistActivityFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         String tagName = getActivity().getString(R.string.track_fragment_tag);
         Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(tagName);
+        SpotifyActivity.chosenTrack = null;
+        SpotifyArtist chosenArtist = mAdapter.getSpotifyArtistAtIndex(position);
+        SpotifyActivity.chosenArtist = chosenArtist;
         if (null != fragment) {
-            retrieveTopTracksForArtist(position);
+            retrieveTopTracksForArtist(chosenArtist);
         } else {
-            launchTrackActivity(position);
+            launchTrackActivity(chosenArtist);
         }
     }
 }

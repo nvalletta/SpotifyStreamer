@@ -2,6 +2,7 @@ package nanodegree.spotifystreamer.activities;
 
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.widget.TextView;
 
 import nanodegree.spotifystreamer.R;
@@ -13,7 +14,6 @@ public final class TrackActivity extends SpotifyActivity {
 
 
     private static final String SPOTIFY_ARTIST_PARCEL_KEY = "SELECTED_ARTIST";
-    private SpotifyArtist spotifyArtist = null;
 
 
     @Override
@@ -22,16 +22,16 @@ public final class TrackActivity extends SpotifyActivity {
         setContentView(R.layout.activity_tracks);
 
         if (null != savedInstanceState && null != savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY)) {
-            spotifyArtist = savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY);
+            SpotifyActivity.chosenArtist = savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY);
             populateViewWithArtistTrackData();
             return;
         }
 
-        if (null != getIntent() && getIntent().hasExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY) && null == spotifyArtist) {
-            spotifyArtist = getIntent().getParcelableExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY);
-            if (null != spotifyArtist) {
+        if (null != getIntent() && getIntent().hasExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY) && null == SpotifyActivity.chosenArtist) {
+            SpotifyActivity.chosenArtist = getIntent().getParcelableExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY);
+            if (null != SpotifyActivity.chosenArtist) {
                 populateViewWithArtistTrackData();
-                retrieveTopTracks(spotifyArtist.getId());
+                retrieveTopTracks(SpotifyActivity.chosenArtist.getId());
             }
         }
     }
@@ -39,15 +39,15 @@ public final class TrackActivity extends SpotifyActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelable(SPOTIFY_ARTIST_PARCEL_KEY, spotifyArtist);
+        savedInstanceState.putParcelable(SPOTIFY_ARTIST_PARCEL_KEY, SpotifyActivity.chosenArtist);
         super.onSaveInstanceState(savedInstanceState);
     }
 
 
     private void populateViewWithArtistTrackData() {
-        if (null != spotifyArtist) {
+        if (null != SpotifyActivity.chosenArtist) {
             TextView artistName = (TextView)findViewById(R.id.mainText);
-            artistName.setText(spotifyArtist.getName());
+            artistName.setText(SpotifyActivity.chosenArtist.getName());
         }
     }
 
