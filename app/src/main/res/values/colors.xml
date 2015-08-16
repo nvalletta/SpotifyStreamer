@@ -2,5 +2,6 @@
 <resources>
     <color name="spotifyGreen">#2ebd59</color>
     <color name="darkGray">#2f2f2f</color>
+    <color name="lightGray">#c9c9c9</color>
     <color name="offWhite">#ecf3e6</color>
 </resources>

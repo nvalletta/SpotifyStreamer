@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content" android:layout_gravity="center"
+    android:gravity="center">
+
+    <TextView
+        android:id="@+id/artistName"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Artist Name"/>
+    <TextView
+        android:id="@+id/albumName"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Album Name"
+        android:paddingBottom="@dimen/item_padding"/>
+
+    <ImageView
+        android:layout_height="300dp"
+        android:layout_width="300dp"
+        android:src="@drawable/no_image_available"
+        android:layout_marginTop="@dimen/item_padding"
+        android:layout_marginBottom="@dimen/item_padding"/>
+
+    <TextView
+        android:id="@+id/trackName"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Track Name"
+        android:paddingTop="@dimen/item_padding"/>
+
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/item_padding"
+        android:paddingBottom="@dimen/item_padding"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/item_padding">
+        <ImageView
+            android:id="@+id/previous_button"
+            android:layout_height="70dp"
+            android:layout_width="70dp"
+            android:src="@android:drawable/ic_media_previous"
+            android:background="@color/darkGray"
+            android:layout_alignParentStart="true"
+            android:padding="@dimen/item_padding"
+            android:tint="@color/spotifyGreen"/>
+        <ImageView
+            android:id="@+id/play_button"
+            android:layout_height="70dp"
+            android:layout_width="70dp"
+            android:src="@android:drawable/ic_media_play"
+            android:background="@color/darkGray"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/item_padding"
+            android:tint="@color/spotifyGreen"/>
+        <ImageView
+            android:id="@+id/pause_button"
+            android:layout_height="70dp"
+            android:layout_width="70dp"
+            android:visibility="gone"
+            android:src="@android:drawable/ic_media_pause"
+            android:background="@color/darkGray"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/item_padding"
+            android:tint="@color/spotifyGreen"/>
+        <ImageView
+            android:id="@+id/next_button"
+            android:layout_height="70dp"
+            android:layout_width="70dp"
+            android:src="@android:drawable/ic_media_next"
+            android:background="@color/darkGray"
+            android:layout_alignParentEnd="true"
+            android:padding="@dimen/item_padding"
+            android:tint="@color/spotifyGreen"/>
+    </RelativeLayout>
+
+</LinearLayout>
