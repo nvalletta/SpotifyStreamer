@@ -29,7 +29,8 @@
             android:exported="false"/>
         <service
             android:name=".services.MusicPlayerService"
-            android:exported="false"/>
+            android:exported="false"
+            android:enabled="true"/>
     </application>
 
 </manifest>

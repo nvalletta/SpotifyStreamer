@@ -60,63 +60,83 @@ public final class MusicPlayerDialogFragment extends DialogFragment {
     }
 
 
+    private void navigatePrevious() {
+        if (isBound && !lockPlayCommands) {
+            lockPlayCommands = true;
+            trackIndex--;
+            if (trackIndex < 0) {
+                trackIndex = SpotifyActivity.artistTracks.size() - 1;
+            }
+            track = SpotifyActivity.artistTracks.get(trackIndex);
+            musicPlayerService.playTrack(track.getPreviewUrl());
+            lockPlayCommands = false;
+        }
+    }
+
+
+    private void navigateNext() {
+        if (isBound && !lockPlayCommands) {
+            lockPlayCommands = true;
+            trackIndex++;
+            if (trackIndex >= SpotifyActivity.artistTracks.size()) {
+                trackIndex = 0;
+            }
+            track = SpotifyActivity.artistTracks.get(trackIndex);
+            musicPlayerService.playTrack(track.getPreviewUrl());
+            lockPlayCommands = false;
+        }
+    }
+
+
+    private void playSong() {
+        if (isBound && !lockPlayCommands) {
+            lockPlayCommands = true;
+            if (musicPlayerService.playTrack(track.getPreviewUrl())) {
+                playButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
+            }
+            lockPlayCommands = false;
+        }
+    }
+
+
+    private void pauseSong() {
+        if (isBound && !lockPlayCommands) {
+            lockPlayCommands = true;
+            musicPlayerService.pauseTrack();
+            playButton.setVisibility(View.VISIBLE);
+            pauseButton.setVisibility(View.GONE);
+            lockPlayCommands = false;
+        }
+    }
+
+
     private void setUpButtonListeners() {
         this.previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBound && !lockPlayCommands) {
-                    lockPlayCommands = true;
-                    trackIndex--;
-                    if (trackIndex < 0) {
-                        trackIndex = SpotifyActivity.artistTracks.size() - 1;
-                    }
-                    track = SpotifyActivity.artistTracks.get(trackIndex);
-                    musicPlayerService.playTrack(track.getPreviewUrl());
-                    lockPlayCommands = false;
-                }
+                navigatePrevious();
             }
         });
 
         this.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBound && !lockPlayCommands) {
-                    lockPlayCommands = true;
-                    if (musicPlayerService.playTrack(track.getPreviewUrl())) {
-                        playButton.setVisibility(View.GONE);
-                        pauseButton.setVisibility(View.VISIBLE);
-                    }
-                    lockPlayCommands = false;
-                }
+                playSong();
             }
         });
 
         this.pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBound && !lockPlayCommands) {
-                    lockPlayCommands = true;
-                    musicPlayerService.pauseTrack();
-                    playButton.setVisibility(View.VISIBLE);
-                    pauseButton.setVisibility(View.GONE);
-                    lockPlayCommands = false;
-                }
+               pauseSong();
             }
         });
 
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isBound && !lockPlayCommands) {
-                    lockPlayCommands = true;
-                    trackIndex++;
-                    if (trackIndex >= SpotifyActivity.artistTracks.size()) {
-                        trackIndex = 0;
-                    }
-                    track = SpotifyActivity.artistTracks.get(trackIndex);
-                    musicPlayerService.playTrack(track.getPreviewUrl());
-                    lockPlayCommands = false;
-                }
+                navigateNext();
             }
         });
     }
@@ -151,6 +171,7 @@ public final class MusicPlayerDialogFragment extends DialogFragment {
         Intent intent = new Intent(this.getActivity(), MusicPlayerService.class);
         getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
+
 
     @Override
     public void onStop() {

@@ -17,16 +17,6 @@ import java.io.IOException;
 public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
 
-    public static final String TRACK_DURATION_INTENT_FILTER = "TRACK_DURATION_INTENT_FILTER";
-    public static final String PLAY_PAUSE_READY_INTENT_FILTER = "PLAY_PAUSE_READY_INTENT_FILTER";
-
-    public static final String TRACK_DURATION_INTENT_KEY = "TRACK_DURATION_INTENT_KEY";
-
-    public static final String TRACK_URI_INTENT_KEY = "TRACK_URI";
-
-    public static final String ACTION_PLAY = "PLAY_TRACK";
-    public static final String ACTION_PAUSE = "PAUSE_TRACK";
-
     private final IBinder localBinder = new LocalBinder();
 
     private MediaPlayer mediaPlayer;
@@ -35,11 +25,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     private void emitDurationIntent() {
         //TODO: Tell the music player dialog the duration of the song.
-    }
-
-
-    private void emitPlayPauseReadyIntent() {
-        //TODO: Tell the music player dialog that it can switch icons now.
     }
 
 
@@ -82,6 +67,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
     }
 
+
     @Override
     public IBinder onBind(Intent intent) {
         return localBinder;
@@ -91,8 +77,13 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onPrepared(MediaPlayer mp) {
         emitDurationIntent();
-        emitPlayPauseReadyIntent();
         mp.start();
+    }
+
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        return Service.START_STICKY;
     }
 
 

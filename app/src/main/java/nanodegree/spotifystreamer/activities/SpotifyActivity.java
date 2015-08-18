@@ -25,7 +25,7 @@ public abstract class SpotifyActivity extends FragmentActivity {
 
     public static SpotifyArtist chosenArtist;
     public static List<SpotifyTrack> artistTracks = new ArrayList<>();
-    public static int chosenTrackIndex;
+    public static int chosenTrackIndex = -1;
 
 
     public void performArtistSearch(String query) {
@@ -65,7 +65,10 @@ public abstract class SpotifyActivity extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (null != chosenArtist && null != SpotifyActivity.artistTracks.get(chosenTrackIndex)) {
+        if (null == chosenArtist || -1 == chosenTrackIndex) {
+            return super.onOptionsItemSelected(item);
+        }
+        if (null != SpotifyActivity.artistTracks.get(chosenTrackIndex)) {
             launchMusicPlayerDialogFragment(getSupportFragmentManager());
         }
 
