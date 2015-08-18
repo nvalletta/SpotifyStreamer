@@ -103,7 +103,10 @@ public final class ArtistActivityFragment extends ListFragment {
         super.onListItemClick(l, v, position, id);
         String tagName = getActivity().getString(R.string.track_fragment_tag);
         Fragment fragment = getActivity().getFragmentManager().findFragmentByTag(tagName);
+
         SpotifyActivity.chosenTrack = null;
+        SpotifyActivity.artistTracks.clear();
+
         SpotifyArtist chosenArtist = mAdapter.getSpotifyArtistAtIndex(position);
         SpotifyActivity.chosenArtist = chosenArtist;
         if (null != fragment) {

@@ -2,6 +2,7 @@ package nanodegree.spotifystreamer.services;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Parcelable;
 
 import java.util.ArrayList;

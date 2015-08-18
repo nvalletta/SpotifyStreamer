@@ -7,4 +7,5 @@
     <string name="artists">Artists</string>
     <string name="top_tracks">Top tracks</string>
     <string name="track_fragment_tag">TRACK_FRAGMENT_TAG</string>
+    <string name="now_playing">Now Playing</string>
 </resources>

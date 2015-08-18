@@ -23,17 +23,9 @@ public final class TrackActivity extends SpotifyActivity {
 
         if (null != savedInstanceState && null != savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY)) {
             SpotifyActivity.chosenArtist = savedInstanceState.getParcelable(SPOTIFY_ARTIST_PARCEL_KEY);
-            populateViewWithArtistTrackData();
-            return;
         }
 
-        if (null != getIntent() && getIntent().hasExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY) && null == SpotifyActivity.chosenArtist) {
-            SpotifyActivity.chosenArtist = getIntent().getParcelableExtra(ArtistActivityFragment.ARTIST_PARCEL_KEY);
-            if (null != SpotifyActivity.chosenArtist) {
-                populateViewWithArtistTrackData();
-                retrieveTopTracks(SpotifyActivity.chosenArtist.getId());
-            }
-        }
+        populateViewWithArtistTrackData();
     }
 
 
@@ -48,6 +40,7 @@ public final class TrackActivity extends SpotifyActivity {
         if (null != SpotifyActivity.chosenArtist) {
             TextView artistName = (TextView)findViewById(R.id.mainText);
             artistName.setText(SpotifyActivity.chosenArtist.getName());
+            retrieveTopTracks(SpotifyActivity.chosenArtist.getId());
         }
     }
 

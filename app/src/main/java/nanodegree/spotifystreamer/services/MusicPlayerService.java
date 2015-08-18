@@ -1,18 +1,20 @@
 package nanodegree.spotifystreamer.services;
 
-import android.app.IntentService;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
+import android.os.Binder;
+import android.os.IBinder;
 import android.os.PowerManager;
 
 import java.io.IOException;
 
 
-public class MusicPlayerService extends IntentService implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
 
 
     public static final String TRACK_DURATION_INTENT_FILTER = "TRACK_DURATION_INTENT_FILTER";
@@ -25,22 +27,14 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
     public static final String ACTION_PLAY = "PLAY_TRACK";
     public static final String ACTION_PAUSE = "PAUSE_TRACK";
 
+    private final IBinder localBinder = new LocalBinder();
+
     private MediaPlayer mediaPlayer;
-    private Uri trackPreviewUri;
-
-
-    public MusicPlayerService() { super(""); }
-
-
-    public MusicPlayerService(String name) {
-        super(name);
-    }
+    private String currentTrackUri;
 
 
     private void emitDurationIntent() {
-        Intent durationIntent = new Intent(TRACK_DURATION_INTENT_FILTER);
-        durationIntent.putExtra()
-        sendBroadcast(durationIntent);
+        //TODO: Tell the music player dialog the duration of the song.
     }
 
 
@@ -57,10 +51,9 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
     }
 
 
-    private boolean setMediaDataSource() {
+    private boolean setMediaDataSource(String trackUri) {
         try {
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.setDataSource(getApplicationContext(), trackPreviewUri);
+            mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(trackUri));
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -77,43 +70,21 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
     }
 
 
-    private void handleIntentForAction(String action) {
-        if (action.equals(ACTION_PLAY)) {
-            mediaPlayer = new MediaPlayer();
-            if (null != trackPreviewUri && setMediaDataSource()) {
-                prepareMediaPlayer();
-            }
-        } else if (action.equals(ACTION_PAUSE)) {
-            //TODO: pause.
-        }
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (null == trackPreviewUri) {
-            trackPreviewUri = Uri.parse(intent.getStringExtra(TRACK_URI_INTENT_KEY));
-        }
-        if (null != intent.getAction()) {
-            handleIntentForAction(intent.getAction());
-        }
-        return START_NOT_STICKY;
-    }
-
-
     @Override
     public void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
             mediaPlayer.release();
             mediaPlayer = null;
-            trackPreviewUri = null;
         }
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
-
+    public IBinder onBind(Intent intent) {
+        return localBinder;
     }
 
 
@@ -129,4 +100,50 @@ public class MusicPlayerService extends IntentService implements MediaPlayer.OnP
     public boolean onError(MediaPlayer mp, int what, int extra) {
         return false;
     }
+
+
+    public boolean playTrack(String trackUri) {
+        if (null == trackUri) {
+            return false;
+        }
+        if (null == mediaPlayer) {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+            if (setMediaDataSource(trackUri)) {
+                prepareMediaPlayer();
+                return true;
+            }
+        }
+
+        if (mediaPlayer.isPlaying()) {
+            if (trackUri.equals(currentTrackUri)) {
+                return true;
+            }
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+            if (setMediaDataSource(trackUri)) {
+                prepareMediaPlayer();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    public void pauseTrack() {
+        if (null != mediaPlayer) {
+            mediaPlayer.pause();
+        }
+    }
+
+
+    public class LocalBinder extends Binder {
+        public MusicPlayerService getService() {
+            // Return this instance of MusicPlayerService so clients can call public methods
+            return MusicPlayerService.this;
+        }
+    }
+
 }

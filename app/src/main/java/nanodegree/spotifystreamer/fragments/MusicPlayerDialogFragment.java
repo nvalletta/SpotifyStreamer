@@ -1,7 +1,12 @@
 package nanodegree.spotifystreamer.fragments;
 
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +21,22 @@ import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.models.SpotifyArtist;
 import nanodegree.spotifystreamer.models.SpotifyTrack;
+import nanodegree.spotifystreamer.services.MusicPlayerService;
 
 public final class MusicPlayerDialogFragment extends DialogFragment {
 
     public static final String CHOSEN_ARTIST_KEY = "CHOSEN_ARTIST";
     public static final String CHOSEN_TRACK_KEY = "CHOSEN_TRACK";
+    public static final String CHOSEN_TRACK_INDEX = "CHOSEN_TRACK_INDEX";
+
+    private MusicPlayerService musicPlayerService;
+    private boolean isBound;
 
     private SpotifyArtist artist;
     private SpotifyTrack track;
+    private int trackIndex;
+
+    private boolean lockPlayCommands = false;
 
     private ImageButton previousButton;
     private ImageButton playButton;
@@ -51,28 +64,59 @@ public final class MusicPlayerDialogFragment extends DialogFragment {
         this.previousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: previous track.
+                if (isBound && !lockPlayCommands) {
+                    lockPlayCommands = true;
+                    trackIndex--;
+                    if (trackIndex < 0) {
+                        trackIndex = SpotifyActivity.artistTracks.size() - 1;
+                    }
+                    track = SpotifyActivity.artistTracks.get(trackIndex);
+                    musicPlayerService.playTrack(track.getPreviewUrl());
+                    lockPlayCommands = false;
+                }
             }
         });
 
         this.playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((SpotifyActivity)getActivity()).playTrack(track);
+                if (isBound && !lockPlayCommands) {
+                    lockPlayCommands = true;
+                    if (musicPlayerService.playTrack(track.getPreviewUrl())) {
+                        playButton.setVisibility(View.GONE);
+                        pauseButton.setVisibility(View.VISIBLE);
+                    }
+                    lockPlayCommands = false;
+                }
             }
         });
 
         this.pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: pause music.
+                if (isBound && !lockPlayCommands) {
+                    lockPlayCommands = true;
+                    musicPlayerService.pauseTrack();
+                    playButton.setVisibility(View.VISIBLE);
+                    pauseButton.setVisibility(View.GONE);
+                    lockPlayCommands = false;
+                }
             }
         });
 
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: next track.
+                if (isBound && !lockPlayCommands) {
+                    lockPlayCommands = true;
+                    trackIndex++;
+                    if (trackIndex >= SpotifyActivity.artistTracks.size()) {
+                        trackIndex = 0;
+                    }
+                    track = SpotifyActivity.artistTracks.get(trackIndex);
+                    musicPlayerService.playTrack(track.getPreviewUrl());
+                    lockPlayCommands = false;
+                }
             }
         });
     }
@@ -91,11 +135,48 @@ public final class MusicPlayerDialogFragment extends DialogFragment {
 
         this.artist = getArguments().getParcelable(CHOSEN_ARTIST_KEY);
         this.track = getArguments().getParcelable(CHOSEN_TRACK_KEY);
+        this.trackIndex = getArguments().getInt(CHOSEN_TRACK_INDEX);
+
         if (null != this.track) {
             populateViewData(view);
         }
 
         return view;
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this.getActivity(), MusicPlayerService.class);
+        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isBound) {
+            getActivity().unbindService(serviceConnection);
+            isBound = false;
+        }
+    }
+
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className,
+                                       IBinder service) {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            MusicPlayerService.LocalBinder binder = (MusicPlayerService.LocalBinder) service;
+            musicPlayerService = binder.getService();
+            isBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            isBound = false;
+        }
+    };
+
 
 }

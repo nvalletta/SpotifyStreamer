@@ -25,13 +25,12 @@ public final class TrackActivityFragment extends ListFragment {
 
 
     private static final String SPOTIFY_TRACKS_PARCEL_KEY = "SPOTIFY_TRACKS";
-    private List<SpotifyTrack> spotifyTracks = new ArrayList<>();
     private TrackListAdapter mAdapter;
     private final BroadcastReceiver topTracksBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            spotifyTracks = intent.getParcelableArrayListExtra(TopTrackRetrievalService.TRACKS_EXTRA_KEY);
-            mAdapter = new TrackListAdapter(getActivity(), spotifyTracks);
+            SpotifyActivity.artistTracks = intent.getParcelableArrayListExtra(TopTrackRetrievalService.TRACKS_EXTRA_KEY);
+            mAdapter = new TrackListAdapter(getActivity(), SpotifyActivity.artistTracks);
             setListAdapter(mAdapter);
         }
     };
@@ -49,7 +48,7 @@ public final class TrackActivityFragment extends ListFragment {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY, (ArrayList<? extends Parcelable>)spotifyTracks);
+        savedInstanceState.putParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY, (ArrayList<? extends Parcelable>)SpotifyActivity.artistTracks);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -59,11 +58,9 @@ public final class TrackActivityFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         if (null != savedInstanceState && null != savedInstanceState.getParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY)) {
-            spotifyTracks = savedInstanceState.getParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY);
-        } else {
-            spotifyTracks = new ArrayList<>();
+            SpotifyActivity.artistTracks = savedInstanceState.getParcelableArrayList(SPOTIFY_TRACKS_PARCEL_KEY);
         }
-        mAdapter = new TrackListAdapter(getActivity(), spotifyTracks);
+        mAdapter = new TrackListAdapter(getActivity(), SpotifyActivity.artistTracks);
     }
 
 
@@ -85,17 +82,8 @@ public final class TrackActivityFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        SpotifyTrack chosenTrack = spotifyTracks.get(position);
-        SpotifyActivity.chosenTrack = chosenTrack;
-
-        FragmentManager fragmentManager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
-        MusicPlayerDialogFragment musicPlayerDialogFragment = new MusicPlayerDialogFragment();
-
-        Bundle argument = new Bundle();
-        argument.putParcelable(MusicPlayerDialogFragment.CHOSEN_ARTIST_KEY, SpotifyActivity.chosenArtist);
-        argument.putParcelable(MusicPlayerDialogFragment.CHOSEN_TRACK_KEY, SpotifyActivity.chosenTrack);
-        musicPlayerDialogFragment.setArguments(argument);
-        musicPlayerDialogFragment.show(fragmentManager, "player");
+        SpotifyActivity.chosenTrackIndex = position;
+        SpotifyActivity.launchMusicPlayerDialogFragment(((SpotifyActivity)getActivity()).getSupportFragmentManager());
     }
 
 
