@@ -11,10 +11,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.adapters.TrackListAdapter;
 import nanodegree.spotifystreamer.models.SpotifyTrack;
@@ -32,6 +34,9 @@ public final class TrackActivityFragment extends ListFragment {
             SpotifyActivity.artistTracks = intent.getParcelableArrayListExtra(TopTrackRetrievalService.TRACKS_EXTRA_KEY);
             mAdapter = new TrackListAdapter(getActivity(), SpotifyActivity.artistTracks);
             setListAdapter(mAdapter);
+            if (SpotifyActivity.artistTracks.isEmpty()) {
+                Toast.makeText(getActivity(), context.getString(R.string.no_results_found_please_check_your_internet_connection), Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
@@ -82,8 +87,7 @@ public final class TrackActivityFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        SpotifyActivity.chosenTrackIndex = position;
-        SpotifyActivity.launchMusicPlayerDialogFragment(((SpotifyActivity)getActivity()).getSupportFragmentManager());
+        SpotifyActivity.launchMusicPlayerDialogFragment(((SpotifyActivity)getActivity()).getSupportFragmentManager(), position);
     }
 
 

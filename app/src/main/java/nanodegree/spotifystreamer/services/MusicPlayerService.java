@@ -13,8 +13,12 @@ import android.os.PowerManager;
 
 import java.io.IOException;
 
+import nanodegree.spotifystreamer.activities.SpotifyActivity;
+import nanodegree.spotifystreamer.models.Session;
+import nanodegree.spotifystreamer.models.SpotifyTrack;
 
-public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener {
+
+public class MusicPlayerService extends Service implements MediaPlayer.OnPreparedListener, MediaPlayer.OnErrorListener, MediaPlayer.OnCompletionListener {
 
 
     private final IBinder localBinder = new LocalBinder();
@@ -22,10 +26,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private MediaPlayer mediaPlayer;
     private String currentTrackUri;
 
-
-    private void emitDurationIntent() {
-        //TODO: Tell the music player dialog the duration of the song.
-    }
+    public static Session musicSession = new Session();
 
 
     private void acquireLocks() {
@@ -39,6 +40,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private boolean setMediaDataSource(String trackUri) {
         try {
             mediaPlayer.setDataSource(getApplicationContext(), Uri.parse(trackUri));
+            currentTrackUri = trackUri;
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,6 +52,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private void prepareMediaPlayer() {
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnErrorListener(this);
+        mediaPlayer.setOnCompletionListener(this);
         acquireLocks();
         mediaPlayer.prepareAsync();
     }
@@ -76,14 +79,9 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        emitDurationIntent();
+        musicSession.setDuration(mp.getDuration());
+        musicSession.startTimer();
         mp.start();
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return Service.START_STICKY;
     }
 
 
@@ -93,11 +91,17 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     }
 
 
-    public boolean playTrack(String trackUri) {
-        if (null == trackUri) {
+    public boolean playTrack(SpotifyTrack trackToPlay) {
+        if (null == trackToPlay) {
             return false;
         }
+        String trackUri = trackToPlay.getPreviewUrl();
         if (null == mediaPlayer) {
+            musicSession = new Session();
+            musicSession.artist = SpotifyActivity.chosenArtist;
+            musicSession.setTrack(trackToPlay);
+            musicSession.trackIndex = SpotifyActivity.chosenTrackIndex;
+
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -107,15 +111,25 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             }
         }
 
-        if (mediaPlayer.isPlaying()) {
-            if (trackUri.equals(currentTrackUri)) {
-                return true;
-            }
+        if (mediaPlayer.isPlaying() && !trackUri.equals(currentTrackUri)) {
+            musicSession.stopTimer();
             mediaPlayer.stop();
             mediaPlayer.reset();
             if (setMediaDataSource(trackUri)) {
                 prepareMediaPlayer();
                 return true;
+            }
+        } else {
+            if (trackUri.equals(currentTrackUri)) {
+                musicSession.resumeTimer();
+                mediaPlayer.start();
+            } else {
+                musicSession.stopTimer();
+                mediaPlayer.reset();
+                if (setMediaDataSource(trackUri)) {
+                    prepareMediaPlayer();
+                    return true;
+                }
             }
         }
 
@@ -125,14 +139,35 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void pauseTrack() {
         if (null != mediaPlayer) {
+            musicSession.stopTimer();
             mediaPlayer.pause();
         }
     }
 
 
+    public void seekTrack(int progress) {
+        if (null != mediaPlayer) {
+            musicSession.setElapsedSeconds(progress);
+            mediaPlayer.seekTo(progress*1000);
+        }
+    }
+
+
+    public boolean songIsPlaying() {
+        if (null != mediaPlayer) {
+            return mediaPlayer.isPlaying();
+        }
+        return false;
+    }
+
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        musicSession.stopTimer();
+    }
+
+
     public class LocalBinder extends Binder {
         public MusicPlayerService getService() {
-            // Return this instance of MusicPlayerService so clients can call public methods
             return MusicPlayerService.this;
         }
     }

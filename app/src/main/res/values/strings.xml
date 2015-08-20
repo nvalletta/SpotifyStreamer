@@ -8,4 +8,6 @@
     <string name="top_tracks">Top tracks</string>
     <string name="track_fragment_tag">TRACK_FRAGMENT_TAG</string>
     <string name="now_playing">Now Playing</string>
+    <string name="no_results_found_please_check_your_internet_connection">No results found. Please check your internet connection.</string>
+    <string name="no_results_found_please_refine_your_search">No results found. Please refine your search.</string>
 </resources>

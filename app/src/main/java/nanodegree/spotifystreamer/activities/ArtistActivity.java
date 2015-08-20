@@ -36,7 +36,7 @@ public final class ArtistActivity extends SpotifyActivity implements TextWatcher
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_artists);
 

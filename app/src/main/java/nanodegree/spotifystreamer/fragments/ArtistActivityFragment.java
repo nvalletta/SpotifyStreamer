@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,9 @@ public final class ArtistActivityFragment extends ListFragment {
             spotifyArtists = intent.getParcelableArrayListExtra(ArtistRetrievalService.ARTISTS_EXTRA_KEY);
             mAdapter = new ArtistListAdapter(getActivity(), spotifyArtists);
             setListAdapter(mAdapter);
+            if (spotifyArtists.isEmpty()) {
+                Toast.makeText(getActivity(), context.getString(R.string.no_results_found_please_refine_your_search), Toast.LENGTH_SHORT).show();
+            }
         }
     };
 
