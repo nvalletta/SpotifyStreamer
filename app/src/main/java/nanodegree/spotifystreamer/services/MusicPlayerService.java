@@ -12,6 +12,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -81,6 +82,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onPrepared(MediaPlayer mp) {
         Session.getSession().setDuration(mp.getDuration());
+
+        Log.d("stupidProgressBar", "Starting timer now.");
         Session.getSession().startTimer();
         mp.start();
     }
@@ -122,7 +125,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         } else {
             if (trackUri.equals(currentTrackUri)) {
                 mediaPlayer.start();
-                Session.getSession().resumeTimer();
+                Session.getSession().startTimer();
             } else {
                 Session.getSession().stopTimer();
                 mediaPlayer.reset();
@@ -150,6 +153,11 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             Session.getSession().setElapsedSeconds(progress);
             mediaPlayer.seekTo(progress*1000);
         }
+    }
+
+
+    public int getSongProgress() {
+        return mediaPlayer.getCurrentPosition();
     }
 
 

@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,8 +57,6 @@ public final class MusicPlayerDialogFragment extends DialogFragment implements O
     private void updateSessionWithNewTrackInfo(SpotifyTrack track, int trackIndex) {
         Session.getSession().track = track;
         Session.getSession().trackIndex = trackIndex;
-
-        Session.getSession().elapsedSeconds = 0;
     }
 
 
@@ -196,8 +195,10 @@ public final class MusicPlayerDialogFragment extends DialogFragment implements O
             trackDuration.setText(String.format("0:%02d", (Session.getSession().getDuration() / 1000)));
             seekBar.setMax(Session.getSession().getDuration() / 1000);
         }
-        elapsedTime.setText(String.format("0:%02d", Session.getSession().getElapsedSeconds()));
-        seekBar.setProgress(Session.getSession().getElapsedSeconds());
+        if (null != musicPlayerService) {
+            elapsedTime.setText(String.format("0:%02d", musicPlayerService.getSongProgress() / 1000));
+            seekBar.setProgress(musicPlayerService.getSongProgress() / 1000);
+        }
     }
 
 
@@ -290,9 +291,6 @@ public final class MusicPlayerDialogFragment extends DialogFragment implements O
 
     @Override
     public void update(Observable observable, Object data) {
-//        if (musicPlayerService != null && !musicPlayerService.songIsPlaying()) {
-//            return;
-//        }
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {

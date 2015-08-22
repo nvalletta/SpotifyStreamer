@@ -12,7 +12,6 @@ import nanodegree.spotifystreamer.fragments.MusicPlayerDialogFragment;
 public class MusicFragmentActivity extends SpotifyActivity {
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_music_player);
