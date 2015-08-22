@@ -3,16 +3,13 @@ package nanodegree.spotifystreamer.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.io.IOException;
 
@@ -82,8 +79,6 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     @Override
     public void onPrepared(MediaPlayer mp) {
         Session.getSession().setDuration(mp.getDuration());
-
-        Log.d("stupidProgressBar", "Starting timer now.");
         Session.getSession().startTimer();
         mp.start();
     }
