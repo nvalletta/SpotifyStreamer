@@ -3,11 +3,13 @@ package nanodegree.spotifystreamer.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 
@@ -24,9 +26,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
     private final IBinder localBinder = new LocalBinder();
 
     private MediaPlayer mediaPlayer;
-    private String currentTrackUri;
 
-    public static Session musicSession = new Session();
+    public static String currentTrackUri = "";
 
 
     private void acquireLocks() {
@@ -79,8 +80,8 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        musicSession.setDuration(mp.getDuration());
-        musicSession.startTimer();
+        Session.getSession().setDuration(mp.getDuration());
+        Session.getSession().startTimer();
         mp.start();
     }
 
@@ -95,12 +96,11 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         if (null == trackToPlay) {
             return false;
         }
-        String trackUri = trackToPlay.getPreviewUrl();
+        String trackUri = trackToPlay.getPreviewUri();
         if (null == mediaPlayer) {
-            musicSession = new Session();
-            musicSession.artist = SpotifyActivity.chosenArtist;
-            musicSession.setTrack(trackToPlay);
-            musicSession.trackIndex = SpotifyActivity.chosenTrackIndex;
+            Session.getSession().artist = SpotifyActivity.chosenArtist;
+            Session.getSession().setTrack(trackToPlay);
+            Session.getSession().trackIndex = SpotifyActivity.chosenTrackIndex;
 
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -112,7 +112,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
         }
 
         if (mediaPlayer.isPlaying() && !trackUri.equals(currentTrackUri)) {
-            musicSession.stopTimer();
+            Session.getSession().stopTimer();
             mediaPlayer.stop();
             mediaPlayer.reset();
             if (setMediaDataSource(trackUri)) {
@@ -121,10 +121,10 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
             }
         } else {
             if (trackUri.equals(currentTrackUri)) {
-                musicSession.resumeTimer();
                 mediaPlayer.start();
+                Session.getSession().resumeTimer();
             } else {
-                musicSession.stopTimer();
+                Session.getSession().stopTimer();
                 mediaPlayer.reset();
                 if (setMediaDataSource(trackUri)) {
                     prepareMediaPlayer();
@@ -139,7 +139,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void pauseTrack() {
         if (null != mediaPlayer) {
-            musicSession.stopTimer();
+            Session.getSession().stopTimer();
             mediaPlayer.pause();
         }
     }
@@ -147,7 +147,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     public void seekTrack(int progress) {
         if (null != mediaPlayer) {
-            musicSession.setElapsedSeconds(progress);
+            Session.getSession().setElapsedSeconds(progress);
             mediaPlayer.seekTo(progress*1000);
         }
     }
@@ -162,7 +162,7 @@ public class MusicPlayerService extends Service implements MediaPlayer.OnPrepare
 
     @Override
     public void onCompletion(MediaPlayer mp) {
-        musicSession.stopTimer();
+        Session.getSession().stopTimer();
     }
 
 

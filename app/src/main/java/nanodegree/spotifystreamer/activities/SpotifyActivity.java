@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,20 +23,14 @@ import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 public abstract class SpotifyActivity extends FragmentActivity {
 
 
-    private static boolean deviceHasSmallScreen = true;
+    private static final String DIALOG_FRAGMENT_TAG = "DIALOG_FRAGMENT_TAG";
 
     public static SpotifyArtist chosenArtist;
     public static List<SpotifyTrack> artistTracks = new ArrayList<>();
     public static int chosenTrackIndex = -1;
 
+    public static boolean deviceHasSmallScreen = true;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        int screenConfig = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
-        deviceHasSmallScreen = (screenConfig == Configuration.SCREENLAYOUT_SIZE_NORMAL
-                ||  screenConfig == Configuration.SCREENLAYOUT_SIZE_SMALL);
-        super.onCreate(savedInstanceState);
-    }
 
     public void performArtistSearch(String query) {
         Intent searchIntent = new Intent(SpotifyActivity.this, ArtistRetrievalService.class);
@@ -53,23 +46,25 @@ public abstract class SpotifyActivity extends FragmentActivity {
     }
 
 
-    public static void launchMusicPlayerDialogFragment(FragmentManager fm, int trackIndex) {
-        MusicPlayerDialogFragment musicPlayerDialogFragment = new MusicPlayerDialogFragment();
-
-        Bundle args = new Bundle();
-        if (chosenArtist != null && trackIndex > -1) {
-            args.putParcelable(MusicPlayerDialogFragment.CHOSEN_ARTIST_KEY, chosenArtist);
-            args.putParcelable(MusicPlayerDialogFragment.CHOSEN_TRACK_KEY, artistTracks.get(trackIndex));
-            args.putInt(MusicPlayerDialogFragment.CHOSEN_TRACK_INDEX, trackIndex);
-            musicPlayerDialogFragment.setArguments(args);
-        }
-
+    public void launchMusicDialog() {
         if (!deviceHasSmallScreen) {
-            musicPlayerDialogFragment.show(fm, "player");
+            FragmentManager fm = getSupportFragmentManager();
+            MusicPlayerDialogFragment dialog = new MusicPlayerDialogFragment();
+            dialog.show(fm, DIALOG_FRAGMENT_TAG);
         } else {
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.add(android.R.id.content, musicPlayerDialogFragment).commit();
+            Intent musicActivityIntent = new Intent(this, MusicFragmentActivity.class);
+            startActivity(musicActivityIntent);
         }
+    }
+
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        int screenConfig = (getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK);
+        deviceHasSmallScreen = (screenConfig == Configuration.SCREENLAYOUT_SIZE_NORMAL
+                ||  screenConfig == Configuration.SCREENLAYOUT_SIZE_SMALL);
+
+        super.onCreate(savedInstanceState);
     }
 
 
@@ -86,21 +81,11 @@ public abstract class SpotifyActivity extends FragmentActivity {
         if (-1 == chosenTrackIndex) {
             return super.onOptionsItemSelected(item);
         }
-        if (null != SpotifyActivity.artistTracks.get(chosenTrackIndex)) {
-            launchMusicPlayerDialogFragment(getSupportFragmentManager(), chosenTrackIndex);
+        if (null != SpotifyActivity.artistTracks.get(chosenTrackIndex) && getSupportFragmentManager().getBackStackEntryCount() <= 0) {
+            launchMusicDialog();
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
-        } else {
-            super.onBackPressed();
-        }
     }
 
 }

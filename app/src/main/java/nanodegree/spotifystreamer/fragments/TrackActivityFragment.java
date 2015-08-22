@@ -1,7 +1,5 @@
 package nanodegree.spotifystreamer.fragments;
 
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 import android.app.ListFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,12 +12,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import nanodegree.spotifystreamer.R;
 import nanodegree.spotifystreamer.activities.SpotifyActivity;
 import nanodegree.spotifystreamer.adapters.TrackListAdapter;
-import nanodegree.spotifystreamer.models.SpotifyTrack;
+import nanodegree.spotifystreamer.models.Session;
 import nanodegree.spotifystreamer.services.TopTrackRetrievalService;
 
 
@@ -87,7 +84,13 @@ public final class TrackActivityFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        SpotifyActivity.launchMusicPlayerDialogFragment(((SpotifyActivity)getActivity()).getSupportFragmentManager(), position);
+        SpotifyActivity.chosenTrackIndex = position;
+
+        Session.getSession().trackIndex = position;
+        Session.getSession().artist = SpotifyActivity.chosenArtist;
+        Session.getSession().track = SpotifyActivity.artistTracks.get(position);
+
+        ((SpotifyActivity) getActivity()).launchMusicDialog();
     }
 
 

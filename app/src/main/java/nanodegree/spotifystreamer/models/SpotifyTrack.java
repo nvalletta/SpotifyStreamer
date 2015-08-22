@@ -43,7 +43,7 @@ public class SpotifyTrack implements Parcelable {
     }
 
 
-    public String getPreviewUrl() {
+    public String getPreviewUri() {
         return previewUrl;
     }
 

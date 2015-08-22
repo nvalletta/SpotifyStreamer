@@ -24,6 +24,15 @@ public class Session extends Observable {
         }
     };
 
+    private static Session session;
+
+    public static Session getSession() {
+        if (null == session) {
+            session = new Session();
+        }
+        return session;
+    }
+
     public void resumeTimer() {
         timer = new Handler();
         timer.postDelayed(timeElapseEvent, 1000);
